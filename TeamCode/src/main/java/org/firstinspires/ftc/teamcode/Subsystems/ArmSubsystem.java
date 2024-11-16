@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+//TODO: Change this to Autonomous-Only Use
 public class ArmSubsystem extends SubsystemBase {
 
     private final MotorEx extendingMotor;
@@ -45,11 +46,11 @@ public class ArmSubsystem extends SubsystemBase {
 
         if (!extendingMotor.atTargetPosition()){
 
-            extendingMotor.set(0.05);
+            extendingMotor.set(1);
 
         } else if (!angleMotor.atTargetPosition()) {
 
-            angleMotor.set(0.05);
+            angleMotor.set(1);
 
         } else if (extendingMotor.atTargetPosition()){
 
@@ -67,6 +68,7 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
+    //CHECKED THIS! GOOD
     public void extendToBasket(){
 
         extendingMotor.setInverted(false);
@@ -86,6 +88,7 @@ public class ArmSubsystem extends SubsystemBase {
         angleMotor.setVeloCoefficients(0.5, 0, 0.01);
 
     }
+
 
     public void extendToGround(){
 

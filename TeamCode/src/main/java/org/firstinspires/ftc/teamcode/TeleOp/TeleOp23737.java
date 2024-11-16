@@ -5,9 +5,11 @@ import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.Commands.DropCommand;
 import org.firstinspires.ftc.teamcode.Commands.MecanumDriveCommand;
@@ -17,6 +19,7 @@ import org.firstinspires.ftc.teamcode.Commands.GroundCommand;
 import org.firstinspires.ftc.teamcode.Commands.RetractCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.Subsystems.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.Subsystems.HCClaw;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumSubsystem;
 
 @TeleOp(name = "DON'T USE")
@@ -56,14 +59,21 @@ public class TeleOp23737 extends CommandOpMode {
         );
 
 
-        //claw = new Claw(hardwareMap);
+        claw = new ClawSubsystem(
+                hardwareMap.get(ServoEx.class, "lts"),
+                hardwareMap.get(ServoEx.class, "rts"),
+                hardwareMap.get(ServoEx.class, "lws"),
+                hardwareMap.get(ServoEx.class, "rws"),
+                telemetry
+        );
 
 //Register subsystems to add them to the scheduler
         register(arm);
         register(mecanumSubsystem);
-        //register(claw);
+        register(claw);
 
         waitForStart();
+
         arm.resetEncoders();
 
 

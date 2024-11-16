@@ -26,7 +26,6 @@ public class HCClaw extends SubsystemBase {
         this.telemetry = telemetry;
         this.operator = operator;
 
-
     }
 
     @Override
@@ -37,29 +36,59 @@ public class HCClaw extends SubsystemBase {
         telemetry.addData("LWS Power: ", leftWheelServo.getPower());
         telemetry.addData("RWS Power: ", rightWheelServo.getPower());
 
+        controlClaw(operator.getLeftY(), operator.getRightX());
+
+
+    }
+
+    public void controlClaw(double verticalInput, double horizontalInput) {
+
+        if (verticalInput > 0.1 || verticalInput < -0.1) { // Vertical motion
+
+            leftTurnServo.setPower(verticalInput);
+            rightTurnServo.setPower(-verticalInput);
+            
+        } else if (horizontalInput > 0.1 || horizontalInput < -0.1) { // Horizontal/rotational motion
+
+
+            leftTurnServo.setPower(horizontalInput);
+            rightTurnServo.setPower(horizontalInput); // Same direction for rotation
+
+        } else {
+
+            stopTurnServos();
+
+        }
     }
 
     public void verticalMotion(){
 
-        if (operator.getRightX() > -0.05 ||
-            operator.getRightX() < 0.05){
+        if (operator.getRightX() == 0 && operator.getLeftY() != 0){
 
-            leftTurnServo.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightTurnServo.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftTurnServo.setPower(1);
+            rightTurnServo.setPower(-1);
 
-            leftTurnServo.setPower(operator.getLeftY());
-            rightTurnServo.setPower(operator.getLeftY());
+        } else if (operator.getRightX() > 0 && operator.getLeftY() != 0){
 
-        } else if (operator.getRightX() < -0.05||
-        operator.getRightX() > 0.05){
+            leftTurnServo.setPower(0.5);
+            rightTurnServo.setPower(-1);
 
-            leftTurnServo.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightTurnServo.setDirection(DcMotorSimple.Direction.FORWARD);
+        } else if (operator.getRightX()< 0 && operator.getLeftY() != 0){
 
-            leftTurnServo.setPower(operator.getRightX());
-            rightTurnServo.setPower(operator.getRightX());
+            leftTurnServo.setPower(-1);
+            rightTurnServo.setPower(0.5);
 
+        } else{
+
+            leftTurnServo.setPower(0);
+            rightTurnServo.setPower(0);
         }
+    }
+
+    public void stopTurnServos(){
+
+        leftTurnServo.setPower(0);
+        rightTurnServo.setPower(0);
     }
 
     public void collect(){
@@ -67,8 +96,8 @@ public class HCClaw extends SubsystemBase {
         leftWheelServo.setDirection(DcMotorSimple.Direction.FORWARD);
         rightWheelServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftWheelServo.setPower(0.33);
-        rightWheelServo.setPower(0.33);
+        leftWheelServo.setPower(1);
+        rightWheelServo.setPower(1);
 
     }
 
@@ -77,8 +106,15 @@ public class HCClaw extends SubsystemBase {
         leftWheelServo.setDirection(DcMotorSimple.Direction.REVERSE);
         rightWheelServo.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        leftWheelServo.setPower(0.33);
-        rightWheelServo.setPower(0.33);
+        leftWheelServo.setPower(1);
+        rightWheelServo.setPower(1);
+
+    }
+
+    public void stopWheelServos(){
+
+        leftWheelServo.setPower(0);
+        rightWheelServo.setPower(0);
 
     }
 }
