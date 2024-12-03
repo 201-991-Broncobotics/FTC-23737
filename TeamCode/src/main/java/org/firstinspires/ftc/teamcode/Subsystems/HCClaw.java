@@ -61,30 +61,6 @@ public class HCClaw extends SubsystemBase {
         }
     }
 
-    public void verticalMotion(){
-
-        if (operator.getRightX() == 0 && operator.getLeftY() != 0){
-
-            leftTurnServo.setPower(1);
-            rightTurnServo.setPower(-1);
-
-        } else if (operator.getRightX() > 0 && operator.getLeftY() != 0){
-
-            leftTurnServo.setPower(0.5);
-            rightTurnServo.setPower(-1);
-
-        } else if (operator.getRightX()< 0 && operator.getLeftY() != 0){
-
-            leftTurnServo.setPower(-1);
-            rightTurnServo.setPower(0.5);
-
-        } else{
-
-            leftTurnServo.setPower(0);
-            rightTurnServo.setPower(0);
-        }
-    }
-
     public void stopTurnServos(){
 
         leftTurnServo.setPower(0);
