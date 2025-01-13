@@ -27,6 +27,11 @@ public class MecanumSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
         this.driver = driver;
 
+        frontLeft.setInverted(true);
+        backLeft.setInverted(true);
+        frontRight.setInverted(false);
+        backRight.setInverted(false);
+
     }
 
     public void drive(){
@@ -36,9 +41,9 @@ public class MecanumSubsystem extends SubsystemBase {
         telemetry.addData("Back Left Power: ", backLeft.get());
         telemetry.addData("Back Right Power: ", backRight.get());
 
-        strafeSpeed = -driver.getLeftX();
-        forwardSpeed = -driver.getLeftY();
-        turnSpeed = -driver.getRightX();
+        strafeSpeed = driver.getLeftX();
+        forwardSpeed = driver.getLeftY();
+        turnSpeed = driver.getRightX();
 
         mecanumDrive.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed);
 

@@ -36,15 +36,15 @@ public class TeleOpTesting extends CommandOpMode {
 
         mecanumSubsystem = new MecanumSubsystem(
                 new MecanumDrive(
-                        new Motor(hardwareMap, "fL", Motor.GoBILDA.RPM_312),
-                        new Motor(hardwareMap, "fR", Motor.GoBILDA.RPM_312),
-                        new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_312),
-                        new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_312)),
+                        new Motor(hardwareMap, "fL", Motor.GoBILDA.RPM_435),
+                        new Motor(hardwareMap, "fR", Motor.GoBILDA.RPM_435),
+                        new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_435),
+                        new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_435)),
 
-                new Motor(hardwareMap, "fL", Motor.GoBILDA.RPM_312),
-                new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_312),
-                new Motor(hardwareMap, "fR", Motor.GoBILDA.RPM_312),
-                new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_312),
+                new Motor(hardwareMap, "fL", Motor.GoBILDA.RPM_435),
+                new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_435),
+                new Motor(hardwareMap, "fR", Motor.GoBILDA.RPM_435),
+                new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_435),
                 telemetry,
                 driver
         );
@@ -79,29 +79,28 @@ public class TeleOpTesting extends CommandOpMode {
 
         basketPosition.whenActive(new InstantCommand(armSubsystem::basketPosition, armSubsystem));
 
-        collect.whenActive(new InstantCommand(armSubsystem::collectPosition, armSubsystem));
-
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new InstantCommand(armSubsystem::reset, armSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new InstantCommand(armSubsystem::basketPosition, armSubsystem));
+        collect.whenActive(new InstantCommand(armSubsystem::collectPosition, armSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
+                .whenPressed(new InstantCommand(armSubsystem::drop, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
+        operator.getGamepadButton(GamepadKeys.Button.X)
                 .whenHeld(new InstantCommand(armSubsystem::rawExtend, armSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
+        operator.getGamepadButton(GamepadKeys.Button.X)
                 .whenHeld(new InstantCommand(armSubsystem::rawRaise, armSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenHeld(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.Y)
                 .whenPressed(new InstantCommand(clawSubsystem::collect, clawSubsystem));
-
-        operator.getGamepadButton(GamepadKeys.Button.X)
-                .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
-                //.whenInactive(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.B)
                 .whenHeld(new InstantCommand(clawSubsystem::drop, clawSubsystem));

@@ -54,10 +54,12 @@ public class Arm extends SubsystemBase {
 
             } else extendingMotor.set(0);
 
-        } else if (operator.isDown(GamepadKeys.Button.LEFT_STICK_BUTTON))
+        } else if (operator.isDown(GamepadKeys.Button.X)) {
 
             extendingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            extendingMotor.set(-operator.getLeftY());
+            extendingMotor.set(operator.getLeftX());
+
+        }
 
         if (angleIsInPosition){
 
@@ -69,12 +71,12 @@ public class Arm extends SubsystemBase {
 
             } else angleMotor.set(0);
 
-        } else if (operator.isDown(GamepadKeys.Button.RIGHT_STICK_BUTTON)){
+        } else if (operator.isDown(GamepadKeys.Button.X)){
 
             angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            angleMotor.set(operator.getRightY());
+            angleMotor.set(operator.getLeftY());
 
-        };
+        }
     }
 
     public void basketPosition(){
@@ -86,11 +88,11 @@ public class Arm extends SubsystemBase {
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor.setPositionCoefficient(0.05);
         angleMotor.setPositionCoefficient(0.05);
-        extendingMotor.setPositionTolerance(100);
-        angleMotor.setPositionTolerance(10);
+        extendingMotor.setPositionTolerance(25);
+        angleMotor.setPositionTolerance(25);
 
-        extendingTargetPosition = 3600;
-        angleTargetPosition = 1600;
+        extendingTargetPosition = 3300;
+        angleTargetPosition = 1450;
 
     }
 
@@ -106,9 +108,19 @@ public class Arm extends SubsystemBase {
         extendingMotor.setPositionTolerance(100);
         angleMotor.setPositionTolerance(50);
 
-        extendingTargetPosition = 1500;
+        extendingTargetPosition = 1000;
         angleTargetPosition = 0;
 
+    }
+
+    public void drop(){
+
+        angleIsInPosition = false;
+
+        angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        angleMotor.setRunMode(Motor.RunMode.RawPower);
+
+        angleTargetPosition = 0;
     }
 
     public void reset(){
