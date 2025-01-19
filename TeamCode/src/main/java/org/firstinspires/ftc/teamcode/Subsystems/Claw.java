@@ -31,8 +31,8 @@ public class Claw extends SubsystemBase {
         pinchServo.setDirection(DcMotorSimple.Direction.REVERSE);
         rightTurnServo.setInverted(true);
 
-        leftTurnServo.setPosition(0.25);
-        rightTurnServo.setPosition(0.25);
+        leftTurnServo.setPosition(0.5);
+        rightTurnServo.setPosition(0.5);
 
     }
 
@@ -46,6 +46,22 @@ public class Claw extends SubsystemBase {
 
     }
 
+    public void collect(){
+
+        pinchTargetAngle = 0;
+
+        pinchServo.setPower(1);
+
+    }
+
+    public void drop(){
+
+        pinchTargetAngle = 0.25;
+
+        pinchServo.setPower(-1);
+
+    }
+
     public void collectingPosition(){
 
         leftTurnServo.setInverted(false);
@@ -53,8 +69,10 @@ public class Claw extends SubsystemBase {
 
         turnTargetAngle = 0;
 
-        leftTurnServo.setPosition(0.25);
-        rightTurnServo.setPosition(0.25);
+        leftTurnServo.setPosition(0);
+        rightTurnServo.setPosition(0);
+
+        drop();
 
 
     }
@@ -77,25 +95,24 @@ public class Claw extends SubsystemBase {
 
         turnTargetAngle = 90;
 
-        leftTurnServo.setPosition(0.6);
-        rightTurnServo.setPosition(0.6);
+        leftTurnServo.setPosition(0.5);
+        rightTurnServo.setPosition(0.5);
+
+        drop();
 
     }
 
-    public void collect(){
+    public void specimenHighPosition(){
 
-        pinchTargetAngle = 0;
+        leftTurnServo.setInverted(true);
+        rightTurnServo.setInverted(false);
 
-        pinchServo.setPower(1);
+        leftTurnServo.setPosition(0.75);
+        rightTurnServo.setPosition(0.75);
 
-    }
-
-    public void drop(){
-
-        pinchTargetAngle = 0.25;
-
-        pinchServo.setPower(-1);
+        drop();
 
     }
+
 
 }

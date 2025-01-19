@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.HCArm;
 import org.firstinspires.ftc.teamcode.Subsystems.HCClaw;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumSubsystem;
 
-@TeleOp(name = "Teleop23737")
+@TeleOp(name = "OLD DON'T USE")
 public class Comp1 extends CommandOpMode {
 
     private GamepadEx driver, operator;

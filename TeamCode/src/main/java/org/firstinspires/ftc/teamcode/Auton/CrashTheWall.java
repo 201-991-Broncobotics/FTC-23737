@@ -17,16 +17,16 @@ public class CrashTheWall extends CommandOpMode {
     public void initialize() {
 
         driveTrain = new MecanumDrive(
-                new Motor(hardwareMap, "fL", Motor.GoBILDA.RPM_312),
-                new Motor(hardwareMap, "fR", Motor.GoBILDA.RPM_312),
-                new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_312),
-                new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_312));
+                new Motor(hardwareMap, "fL", Motor.GoBILDA.RPM_435),
+                new Motor(hardwareMap, "fR", Motor.GoBILDA.RPM_435),
+                new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_435),
+                new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_435));
 
         waitForStart();
 
         SequentialCommandGroup autonomousCommandGroup = new SequentialCommandGroup(
 
-                new InstantCommand(() -> driveTrain.driveRobotCentric(0.5, 0, 0)),
+                new InstantCommand(() -> driveTrain.driveRobotCentric(-0.5, 0, 0)),
         new WaitCommand(5000),
         new InstantCommand(() -> driveTrain.stop()
         ));

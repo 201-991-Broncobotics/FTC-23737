@@ -56,15 +56,15 @@ public class CRClaw extends SubsystemBase {
 
     public void drop(){
 
-        pinchPower = 0.25;
+        pinchPower = -1;
 
         pinchServo.setPower(pinchPower);
 
     }
 
-    public void close(){
+    public void collect(){
 
-        pinchPower = -0.25;
+        pinchPower = 1;
 
     }
 

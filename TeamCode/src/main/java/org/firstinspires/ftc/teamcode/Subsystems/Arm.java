@@ -16,7 +16,8 @@ public class Arm extends SubsystemBase {
             ticksPerRevolution = 537.7,
             spoolDiameter = 1.181,
             pulleyDiameter = 3.438,
-            power = 0.25;
+            positionPower = 0.25;
+    private double exponentialPower;
     public int extendingTargetPosition, angleTargetPosition;
     private boolean extendingIsInPosition, angleIsInPosition;
 
@@ -50,14 +51,27 @@ public class Arm extends SubsystemBase {
 
             if (!extendingMotor.atTargetPosition()){
 
-                extendingMotor.set(power);
+                extendingMotor.set(positionPower);
 
             } else extendingMotor.set(0);
 
         } else if (operator.isDown(GamepadKeys.Button.X)) {
 
             extendingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            extendingMotor.set(operator.getLeftX());
+
+            if (operator.getLeftX() < 0){
+
+                exponentialPower = Math.pow(operator.getLeftX(), 2);
+                extendingMotor.set(-exponentialPower);
+            } else if (operator.getLeftX() > 0){
+
+                exponentialPower = Math.pow(operator.getLeftX(), 2);
+                extendingMotor.set(exponentialPower);
+            } else {
+
+                extendingMotor.set(0);
+
+            }
 
         }
 
@@ -74,7 +88,28 @@ public class Arm extends SubsystemBase {
         } else if (operator.isDown(GamepadKeys.Button.X)){
 
             angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-            angleMotor.set(operator.getLeftY());
+
+            if (operator.getLeftY() < 0){
+
+                exponentialPower = Math.pow(operator.getLeftY(), 2);
+                angleMotor.set(-exponentialPower);
+
+            } else if (operator.getLeftY() > 0){
+
+                exponentialPower = Math.pow(operator.getLeftY(), 2);
+                angleMotor.set(exponentialPower);
+            } else {
+
+                angleMotor.set(0);
+
+            }
+
+        }
+
+        if (Math.abs(extendingMotor.getDistance()) > 3500){
+
+            extendingMotor.set(0);
+            telemetry.addLine("Overextending!!!!");
 
         }
     }
@@ -86,6 +121,8 @@ public class Arm extends SubsystemBase {
 
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         extendingMotor.setPositionCoefficient(0.05);
         angleMotor.setPositionCoefficient(0.05);
         extendingMotor.setPositionTolerance(25);
@@ -103,13 +140,15 @@ public class Arm extends SubsystemBase {
 
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         extendingMotor.setPositionCoefficient(0.05);
         angleMotor.setPositionCoefficient(0.05);
-        extendingMotor.setPositionTolerance(100);
-        angleMotor.setPositionTolerance(50);
+        extendingMotor.setPositionTolerance(25);
+        angleMotor.setPositionTolerance(25);
 
-        extendingTargetPosition = 1000;
-        angleTargetPosition = 0;
+        extendingTargetPosition = 0;
+        angleTargetPosition = 200;
 
     }
 
@@ -160,12 +199,54 @@ public class Arm extends SubsystemBase {
 
     }
 
-    public int inchesToTicks(double inches, double diameter){
+    public void specimenHighPosition(){
 
-        double circumference = Math.PI * diameter;
-        double revolutions = inches/circumference;
+        angleIsInPosition = true;
+        extendingIsInPosition = true;
 
-        return (int) (revolutions * ticksPerRevolution);
+        angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setRunMode(Motor.RunMode.PositionControl);
+        angleMotor.setPositionCoefficient(0.05);
+        angleMotor.setPositionTolerance(25);
+        extendingMotor.setPositionCoefficient(0.5);
+        extendingMotor.setPositionTolerance(25);
+
+        angleTargetPosition = 1350;
+        extendingTargetPosition = 0;
+
+    }
+
+    public void specimenLowPosition(){
+
+        angleIsInPosition = true;
+        extendingIsInPosition = true;
+
+        angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setRunMode(Motor.RunMode.PositionControl);
+        angleMotor.setPositionCoefficient(0.05);
+        angleMotor.setPositionTolerance(25);
+        extendingMotor.setPositionCoefficient(0.5);
+        extendingMotor.setPositionTolerance(25);
+
+        angleTargetPosition = 575;
+        extendingTargetPosition = 0;
+
+    }
+
+    public void setCurrentPosition(){
+
+        angleIsInPosition = true;
+        extendingIsInPosition = true;
+
+        angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setRunMode(Motor.RunMode.PositionControl);
+        angleMotor.setPositionCoefficient(0.05);
+        angleMotor.setPositionTolerance(25);
+        extendingMotor.setPositionCoefficient(0.5);
+        extendingMotor.setPositionTolerance(25);
+
+        angleTargetPosition = (int) angleMotor.getDistance();
+        extendingTargetPosition = (int) extendingMotor.getDistance();
 
     }
 

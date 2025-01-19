@@ -19,8 +19,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumSubsystem;
 
-@TeleOp(name = "TeleOp W/ Positions")
-public class TeleOpTesting extends CommandOpMode {
+@TeleOp(name = "TeleOp23737")
+public class TeleOp23737 extends CommandOpMode {
 
     private GamepadEx driver, operator;
     private Arm armSubsystem;
@@ -69,6 +69,8 @@ public class TeleOpTesting extends CommandOpMode {
         Trigger basketPosition = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0);
         Trigger collect = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) != 0);
 
+        armSubsystem.resetEncoders();
+
         telemetry.addLine("Remember to reset the arm's encoders at the start of TeleOp by pressing A...");
         telemetry.update();
 
@@ -78,14 +80,19 @@ public class TeleOpTesting extends CommandOpMode {
         armSubsystem.setDefaultCommand(new ArmFunctionalityCommand(armSubsystem));
 
         basketPosition.whenActive(new InstantCommand(armSubsystem::basketPosition, armSubsystem));
+        basketPosition.toggleWhenActive(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new InstantCommand(armSubsystem::reset, armSubsystem));
 
         collect.whenActive(new InstantCommand(armSubsystem::collectPosition, armSubsystem));
+        collect.whenActive(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new InstantCommand(armSubsystem::drop, clawSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::drop));
 
         operator.getGamepadButton(GamepadKeys.Button.X)
                 .whenHeld(new InstantCommand(armSubsystem::rawExtend, armSubsystem));
@@ -93,17 +100,32 @@ public class TeleOpTesting extends CommandOpMode {
         operator.getGamepadButton(GamepadKeys.Button.X)
                 .whenHeld(new InstantCommand(armSubsystem::rawRaise, armSubsystem));
 
+        operator.getGamepadButton(GamepadKeys.Button.X)
+                .whenInactive(new InstantCommand(armSubsystem::setCurrentPosition, armSubsystem));
+
         operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenHeld(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
 
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(new InstantCommand(armSubsystem::specimenHighPosition, armSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenHighPosition, clawSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+                .whenPressed(new InstantCommand(armSubsystem::specimenLowPosition, armSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenPosition, clawSubsystem));
+
         operator.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(new InstantCommand(clawSubsystem::collect, clawSubsystem));
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::collect, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.B)
-                .whenHeld(new InstantCommand(clawSubsystem::drop, clawSubsystem));
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::drop, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new InstantCommand(armSubsystem::resetEncoders, armSubsystem));
