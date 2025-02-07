@@ -8,7 +8,7 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name = "Auton23737 CRASH RIGHT")
+@Autonomous(name = "CRASH RIGHT")
 public class CrashTheWall2 extends CommandOpMode {
 
     private MecanumDrive driveTrain;

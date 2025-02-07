@@ -29,8 +29,8 @@ public class MecanumSubsystem extends SubsystemBase {
 
         frontLeft.setInverted(true);
         backLeft.setInverted(true);
-        frontRight.setInverted(false);
-        backRight.setInverted(false);
+        frontRight.setInverted(true);
+        backRight.setInverted(true);
 
     }
 

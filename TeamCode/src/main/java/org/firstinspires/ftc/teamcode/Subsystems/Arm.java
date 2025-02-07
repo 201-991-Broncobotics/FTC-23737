@@ -16,7 +16,7 @@ public class Arm extends SubsystemBase {
             ticksPerRevolution = 537.7,
             spoolDiameter = 1.181,
             pulleyDiameter = 3.438,
-            positionPower = 0.25;
+            positionPower = 0.4;
     private double exponentialPower;
     public int extendingTargetPosition, angleTargetPosition;
     private boolean extendingIsInPosition, angleIsInPosition;
@@ -36,7 +36,7 @@ public class Arm extends SubsystemBase {
 
     }
 
-    public void armMechanism(){
+    public void armMechanism() {
 
         telemetry.addData("Angle Motor Power: ", angleMotor.get());
         telemetry.addData("Angle Motor Current Position: ", angleMotor.getDistance());
@@ -45,68 +45,49 @@ public class Arm extends SubsystemBase {
         telemetry.addData("Extending Motor Current Position: ", extendingMotor.getDistance());
         telemetry.addData("Extending Motor Target Position: ", extendingTargetPosition);
 
-        if (extendingIsInPosition){
+        if (extendingIsInPosition) {
 
             extendingMotor.setTargetPosition(extendingTargetPosition);
 
-            if (!extendingMotor.atTargetPosition()){
+            if (!extendingMotor.atTargetPosition()) {
 
                 extendingMotor.set(positionPower);
 
             } else extendingMotor.set(0);
 
-        } else if (operator.isDown(GamepadKeys.Button.X)) {
+        } else if (Math.abs(operator.getRightY()) > 0.05) {
 
             extendingMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            extendingMotor.set(-operator.getRightY());
 
-            if (operator.getLeftX() < 0){
-
-                exponentialPower = Math.pow(operator.getLeftX(), 2);
-                extendingMotor.set(-exponentialPower);
-            } else if (operator.getLeftX() > 0){
-
-                exponentialPower = Math.pow(operator.getLeftX(), 2);
-                extendingMotor.set(exponentialPower);
-            } else {
+        } else {
 
                 extendingMotor.set(0);
-
             }
 
-        }
 
-        if (angleIsInPosition){
+        if (angleIsInPosition) {
 
             angleMotor.setTargetPosition(angleTargetPosition);
 
-            if (!angleMotor.atTargetPosition()){
+            if (!angleMotor.atTargetPosition()) {
 
                 angleMotor.set(0.02);
 
             } else angleMotor.set(0);
 
-        } else if (operator.isDown(GamepadKeys.Button.X)){
+        } else if (Math.abs(operator.getLeftY()) > 0.05) {
 
             angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            angleMotor.set(operator.getLeftY());
 
-            if (operator.getLeftY() < 0){
+        } else {
 
-                exponentialPower = Math.pow(operator.getLeftY(), 2);
-                angleMotor.set(-exponentialPower);
-
-            } else if (operator.getLeftY() > 0){
-
-                exponentialPower = Math.pow(operator.getLeftY(), 2);
-                angleMotor.set(exponentialPower);
-            } else {
-
-                angleMotor.set(0);
-
-            }
+            angleMotor.set(0);
 
         }
 
-        if (Math.abs(extendingMotor.getDistance()) > 3500){
+        if (Math.abs(extendingMotor.getDistance()) > 4400){
 
             extendingMotor.set(0);
             telemetry.addLine("Overextending!!!!");
@@ -128,8 +109,8 @@ public class Arm extends SubsystemBase {
         extendingMotor.setPositionTolerance(25);
         angleMotor.setPositionTolerance(25);
 
-        extendingTargetPosition = 3300;
-        angleTargetPosition = 1450;
+        extendingTargetPosition = 4300;
+        angleTargetPosition = 1925;
 
     }
 
@@ -224,11 +205,11 @@ public class Arm extends SubsystemBase {
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
         angleMotor.setPositionCoefficient(0.05);
-        angleMotor.setPositionTolerance(25);
+        angleMotor.setPositionTolerance(10);
         extendingMotor.setPositionCoefficient(0.5);
         extendingMotor.setPositionTolerance(25);
 
-        angleTargetPosition = 575;
+        angleTargetPosition = 675;
         extendingTargetPosition = 0;
 
     }

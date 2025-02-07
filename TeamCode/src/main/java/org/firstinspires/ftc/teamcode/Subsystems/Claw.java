@@ -1,38 +1,42 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.ServoEx;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class Claw extends SubsystemBase {
 
-    private ServoEx leftTurnServo, rightTurnServo;
-    private CRServo pinchServo;
+    private ServoEx leftTurnServo, rightTurnServo, pinchServo;
     private Telemetry telemetry;
+    private GamepadEx operator;
     private double turnTargetAngle = 0;
     private double pinchTargetAngle = 0;
+    public int toggle = 0;
+    public int grabToggle = 0;
+
 
     public Claw(ServoEx leftTurnServo, ServoEx rightTurnServo,
-                CRServo pinchServo,
+                ServoEx pinchServo, GamepadEx operator,
                 Telemetry telemetry){
 
         this.leftTurnServo = leftTurnServo;
         this.rightTurnServo = rightTurnServo;
         this.pinchServo = pinchServo;
         this.telemetry = telemetry;
+        this.operator = operator;
 
-        leftTurnServo.setRange(0, 360, AngleUnit.DEGREES);
-        rightTurnServo.setRange(0, 360, AngleUnit.DEGREES);
+        leftTurnServo.setRange(-360, 360, AngleUnit.DEGREES);
+        rightTurnServo.setRange(-360, 360, AngleUnit.DEGREES);
 
-        pinchServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        pinchServo.setInverted(true);
         rightTurnServo.setInverted(true);
 
-        leftTurnServo.setPosition(0.5);
-        rightTurnServo.setPosition(0.5);
+        toggle = 0;
+        grabToggle = 0;
 
     }
 
@@ -41,16 +45,35 @@ public class Claw extends SubsystemBase {
 
         telemetry.addData("Left Turn Servo Degrees: ", (leftTurnServo.getPosition() * 360));
         telemetry.addData("Right Turn Servo Degrees: ", (rightTurnServo.getPosition() * 360));
-        telemetry.addData("Pinch Servo Power: ", pinchServo.getPower());
+        telemetry.addData("Pinch Servo Angle: ", pinchServo.getAngle());
 
 
+    }
+
+    public void setClawToggle(){
+
+        if (operator.isDown(GamepadKeys.Button.RIGHT_BUMPER)){
+
+            if (toggle == 0){
+
+                drop();
+
+            } else if (toggle == 1){
+
+                collect();
+
+
+            }
+        }
     }
 
     public void collect(){
 
         pinchTargetAngle = 0;
 
-        pinchServo.setPower(1);
+        pinchServo.setPosition(0);
+
+        toggle = 0;
 
     }
 
@@ -58,7 +81,9 @@ public class Claw extends SubsystemBase {
 
         pinchTargetAngle = 0.25;
 
-        pinchServo.setPower(-1);
+        pinchServo.setPosition(0.25);
+
+        toggle = 1;
 
     }
 
@@ -69,11 +94,10 @@ public class Claw extends SubsystemBase {
 
         turnTargetAngle = 0;
 
-        leftTurnServo.setPosition(0);
-        rightTurnServo.setPosition(0);
+        leftTurnServo.setPosition(0.9);
+        rightTurnServo.setPosition(0.9);
 
-        drop();
-
+        grabToggle = 0;
 
     }
 
@@ -83,8 +107,8 @@ public class Claw extends SubsystemBase {
         rightTurnServo.setInverted(true);
         turnTargetAngle = 360;
 
-        leftTurnServo.setPosition(0.9);
-        rightTurnServo.setPosition(0.9);
+        leftTurnServo.setPosition(0.2);
+        rightTurnServo.setPosition(0.2);
 
     }
 
@@ -95,10 +119,8 @@ public class Claw extends SubsystemBase {
 
         turnTargetAngle = 90;
 
-        leftTurnServo.setPosition(0.5);
-        rightTurnServo.setPosition(0.5);
-
-        drop();
+        leftTurnServo.setPosition(0.45);
+        rightTurnServo.setPosition(0.45);
 
     }
 
@@ -107,10 +129,37 @@ public class Claw extends SubsystemBase {
         leftTurnServo.setInverted(true);
         rightTurnServo.setInverted(false);
 
-        leftTurnServo.setPosition(0.75);
-        rightTurnServo.setPosition(0.75);
+        leftTurnServo.setPosition(0.45);
+        rightTurnServo.setPosition(0.45);
 
-        drop();
+    }
+
+    public void verticalPosition(){
+
+        leftTurnServo.setInverted(false);
+        rightTurnServo.setInverted(false);
+
+        rightTurnServo.setPosition(0.9);
+        leftTurnServo.setPosition(-0.9);
+
+        grabToggle = 1;
+
+    }
+
+    public void grabToggle(){
+
+        if (Math.abs(operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)) != 0) {
+
+            if (grabToggle == 0) {
+
+                verticalPosition();
+
+            } else if (grabToggle == 1) {
+
+                collectingPosition();
+
+            }
+        }
 
     }
 

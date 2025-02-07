@@ -7,12 +7,10 @@ import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.Commands.ArmFunctionalityCommand;
 import org.firstinspires.ftc.teamcode.Commands.MecanumDriveCommand;
@@ -20,8 +18,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumSubsystem;
 
-@TeleOp(name = "TeleOp23737")
-public class TeleOp23737 extends CommandOpMode {
+@TeleOp(name = "TeleOp TESTING")
+public class TeleOpTesting extends CommandOpMode {
 
     private GamepadEx driver, operator;
     private Arm armSubsystem;
@@ -51,7 +49,7 @@ public class TeleOp23737 extends CommandOpMode {
         );
 
         armSubsystem = new Arm(
-                new MotorEx(hardwareMap, "em", 537.7, 312),
+                new MotorEx(hardwareMap, "em", 751.8, 223),
                 new MotorEx(hardwareMap, "am", 537.7, 312),
                 telemetry,
                 operator
@@ -69,7 +67,7 @@ public class TeleOp23737 extends CommandOpMode {
         register(clawSubsystem);
 
         Trigger reset = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0);
-        Trigger drop = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) != 0);
+        Trigger intakeToggle = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) != 0);
         Trigger rawExtend = new Trigger(() -> Math.abs(operator.getRightY()) > 0.05);
         Trigger rawRaise = new Trigger(() -> Math.abs(operator.getLeftY()) > 0.05);
 
@@ -91,7 +89,7 @@ public class TeleOp23737 extends CommandOpMode {
         operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .toggleWhenActive(new InstantCommand(clawSubsystem::basketPosition));
 
-        drop.toggleWhenActive(new InstantCommand(clawSubsystem::drop, clawSubsystem));
+        intakeToggle.toggleWhenActive(new InstantCommand(clawSubsystem::grabToggle, clawSubsystem));
 
         rawExtend.whenActive(new InstantCommand(armSubsystem::rawExtend, armSubsystem));
         rawExtend.whenInactive(new InstantCommand(armSubsystem::setCurrentPosition, armSubsystem));
@@ -100,7 +98,7 @@ public class TeleOp23737 extends CommandOpMode {
         rawRaise.whenInactive(new InstantCommand(armSubsystem::setCurrentPosition, armSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .toggleWhenPressed(new InstantCommand(clawSubsystem::collect, clawSubsystem));
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::setClawToggle, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
