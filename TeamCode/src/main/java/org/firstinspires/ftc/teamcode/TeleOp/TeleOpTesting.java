@@ -13,6 +13,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Commands.ArmFunctionalityCommand;
+import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Claw;
@@ -104,7 +105,7 @@ public class TeleOpTesting extends CommandOpMode {
                 .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenHeld(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
+                .whenPressed(new IntakeCommand(armSubsystem, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenHighPosition, armSubsystem));

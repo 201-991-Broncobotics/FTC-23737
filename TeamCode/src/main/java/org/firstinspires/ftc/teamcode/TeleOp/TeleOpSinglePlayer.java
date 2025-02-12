@@ -7,23 +7,22 @@ import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.Commands.ArmFunctionalityCommand;
+import org.firstinspires.ftc.teamcode.Commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.Commands.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Claw;
 import org.firstinspires.ftc.teamcode.Subsystems.MecanumSubsystem;
 
-@TeleOp(name = "TeleOp23737")
-public class TeleOp23737 extends CommandOpMode {
+@TeleOp(name = "TeleOp - Single Player (WIP)")
+public class TeleOpSinglePlayer extends CommandOpMode {
 
-    private GamepadEx driver, operator;
+    private GamepadEx driver;
     private Arm armSubsystem;
     private MecanumSubsystem mecanumSubsystem;
     private Claw clawSubsystem;
@@ -33,7 +32,6 @@ public class TeleOp23737 extends CommandOpMode {
 
 
         driver = new GamepadEx(gamepad1);
-        operator = new GamepadEx(gamepad2);
 
         mecanumSubsystem = new MecanumSubsystem(
                 new MecanumDrive(
@@ -51,27 +49,26 @@ public class TeleOp23737 extends CommandOpMode {
         );
 
         armSubsystem = new Arm(
-                new MotorEx(hardwareMap, "em", 537.7, 312),
+                new MotorEx(hardwareMap, "em", 751.8, 223),
                 new MotorEx(hardwareMap, "am", 537.7, 312),
                 telemetry,
-                operator
+                driver
         );
 
         clawSubsystem = new Claw(
                 new SimpleServo(hardwareMap, "lts", 0, 360),
                 new SimpleServo(hardwareMap, "rts", 0, 360),
                 new SimpleServo(hardwareMap, "ps", 0, 360),
-                operator,
+                driver,
                 telemetry);
 
         register(armSubsystem);
         register(mecanumSubsystem);
         register(clawSubsystem);
 
-        Trigger reset = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0);
-        Trigger drop = new Trigger(() -> operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) != 0);
-        Trigger rawExtend = new Trigger(() -> Math.abs(operator.getRightY()) > 0.05);
-        Trigger rawRaise = new Trigger(() -> Math.abs(operator.getLeftY()) > 0.05);
+        Trigger reset = new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) != 0);
+        Trigger intakeToggle = new Trigger(() -> driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) != 0);
+        Trigger rawExtend = new Trigger(() -> Math.abs(driver.getRightY()) > 0.05);
 
         armSubsystem.resetEncoders();
 
@@ -86,45 +83,41 @@ public class TeleOp23737 extends CommandOpMode {
         reset.whenActive(new InstantCommand(armSubsystem::reset, armSubsystem));
         reset.toggleWhenActive(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(new InstantCommand(armSubsystem::basketPosition, armSubsystem));
-        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+        driver.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .toggleWhenActive(new InstantCommand(clawSubsystem::basketPosition));
 
-        drop.toggleWhenActive(new InstantCommand(clawSubsystem::drop, clawSubsystem));
+        intakeToggle.toggleWhenActive(new InstantCommand(clawSubsystem::grabToggle, clawSubsystem));
 
         rawExtend.whenActive(new InstantCommand(armSubsystem::rawExtend, armSubsystem));
         rawExtend.whenInactive(new InstantCommand(armSubsystem::setCurrentPosition, armSubsystem));
 
-        rawRaise.whenActive(new InstantCommand(armSubsystem::rawRaise, armSubsystem));
-        rawRaise.whenInactive(new InstantCommand(armSubsystem::setCurrentPosition, armSubsystem));
+        driver.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::setClawToggle, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .toggleWhenPressed(new InstantCommand(clawSubsystem::collect, clawSubsystem));
-
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenHeld(new InstantCommand(clawSubsystem::collectingPosition, clawSubsystem));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(new IntakeCommand(armSubsystem, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenHighPosition, armSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenHighPosition, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenLowPosition, armSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenPosition, clawSubsystem));
 
-        operator.getGamepadButton(GamepadKeys.Button.A)
+        driver.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new InstantCommand(armSubsystem::resetEncoders, armSubsystem));
 
         schedule(new RunCommand(telemetry::update));
-
 
 
     }

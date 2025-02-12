@@ -14,7 +14,7 @@ public class LConstants {
         TwoWheelConstants.forwardY = -6.75;
         TwoWheelConstants.strafeX = 5.6;
         TwoWheelConstants.forwardEncoder_HardwareMapName = "fR";
-        TwoWheelConstants.strafeEncoder_HardwareMapName = "fL";
+        TwoWheelConstants.strafeEncoder_HardwareMapName = "bL";
         TwoWheelConstants.forwardEncoderDirection = Encoder.FORWARD;
         TwoWheelConstants.strafeEncoderDirection = Encoder.FORWARD;
         TwoWheelConstants.IMU_HardwareMapName = "imu";

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import android.icu.text.Transliterator;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -9,15 +11,16 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Arm extends SubsystemBase {
 
-    private final MotorEx extendingMotor, angleMotor;
+    public final MotorEx extendingMotor, angleMotor;
     private Telemetry telemetry;
     private final GamepadEx operator;
     private final double
             ticksPerRevolution = 537.7,
             spoolDiameter = 1.181,
             pulleyDiameter = 3.438,
-            positionPower = 0.4;
+            positionPower = 0.8;
     private double exponentialPower;
+    private double trackedPosition;
     public int extendingTargetPosition, angleTargetPosition;
     private boolean extendingIsInPosition, angleIsInPosition;
 
@@ -163,10 +166,17 @@ public class Arm extends SubsystemBase {
     public void rawExtend(){
 
         extendingIsInPosition = false;
+        angleIsInPosition = true;
 
         extendingMotor.setRunMode(Motor.RunMode.RawPower);
+        angleMotor.setRunMode(Motor.RunMode.PositionControl);
+
+        angleMotor.setPositionCoefficient(0.05);
+        angleMotor.setPositionTolerance(25);
 
         extendingTargetPosition = 0;
+        angleTargetPosition = (int) angleMotor.getDistance();
+
 
     }
 
@@ -231,6 +241,21 @@ public class Arm extends SubsystemBase {
 
     }
 
+    public void dropAndPickUp(){
+
+        angleIsInPosition = true;
+        extendingIsInPosition = true;
+
+        angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setRunMode(Motor.RunMode.PositionControl);
+        angleMotor.setPositionCoefficient(0.05);
+        angleMotor.setPositionTolerance(25);
+        extendingMotor.setPositionCoefficient(0.5);
+        extendingMotor.setPositionTolerance(25);
+
+        angleTargetPosition = -100;
+        extendingTargetPosition = (int) extendingMotor.getDistance();
+    }
     public void resetEncoders(){
 
         extendingMotor.resetEncoder();
