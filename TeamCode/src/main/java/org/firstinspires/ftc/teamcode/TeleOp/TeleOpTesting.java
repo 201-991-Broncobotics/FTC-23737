@@ -102,16 +102,19 @@ public class TeleOpTesting extends CommandOpMode {
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::setClawToggle, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
+                .whenPressed(new InstantCommand(armSubsystem::specimenHighPosition, armSubsystem));
+
+        operator.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenHighPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(new IntakeCommand(armSubsystem, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .whenPressed(new InstantCommand(armSubsystem::specimenHighPosition, armSubsystem));
+                .whenPressed(new InstantCommand(armSubsystem::specimenLoadPosition, armSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
-                .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenHighPosition, clawSubsystem));
+                .whenPressed(new InstantCommand(clawSubsystem::specimenLoadPosition, clawSubsystem));
 
         operator.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenLowPosition, armSubsystem));

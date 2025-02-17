@@ -9,10 +9,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class LConstants {
     static {
 
-        TwoWheelConstants.forwardTicksToInches = 0.0019848266825179;
-        TwoWheelConstants.strafeTicksToInches =  0.00107103909;
-        TwoWheelConstants.forwardY = -6.75;
-        TwoWheelConstants.strafeX = 5.6;
+        TwoWheelConstants.forwardTicksToInches = 0.001996837378676409;
+        TwoWheelConstants.strafeTicksToInches =  0.0010698055860546931;
+        TwoWheelConstants.forwardY = -7;
+        TwoWheelConstants.strafeX = 6.2;
         TwoWheelConstants.forwardEncoder_HardwareMapName = "fR";
         TwoWheelConstants.strafeEncoder_HardwareMapName = "bL";
         TwoWheelConstants.forwardEncoderDirection = Encoder.FORWARD;

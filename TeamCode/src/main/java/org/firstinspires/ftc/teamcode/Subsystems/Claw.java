@@ -4,9 +4,13 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class Claw extends SubsystemBase {
 
@@ -17,6 +21,7 @@ public class Claw extends SubsystemBase {
     private double pinchTargetAngle = 0;
     public int toggle = 0;
     public int grabToggle = 0;
+    private ElapsedTime timer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
 
     public Claw(ServoEx leftTurnServo, ServoEx rightTurnServo,
@@ -29,10 +34,10 @@ public class Claw extends SubsystemBase {
         this.telemetry = telemetry;
         this.operator = operator;
 
-        leftTurnServo.setRange(-360, 360, AngleUnit.DEGREES);
-        rightTurnServo.setRange(-360, 360, AngleUnit.DEGREES);
+        leftTurnServo.setRange(0, 180, AngleUnit.DEGREES);
+        rightTurnServo.setRange(0, 180, AngleUnit.DEGREES);
 
-        pinchServo.setInverted(true);
+        pinchServo.setInverted(false);
         rightTurnServo.setInverted(true);
 
         toggle = 0;
@@ -69,19 +74,18 @@ public class Claw extends SubsystemBase {
 
     public void collect(){
 
-        pinchTargetAngle = 0;
+        pinchTargetAngle = 0.35;
 
-        pinchServo.setPosition(0);
-
+        pinchServo.setPosition(0.35);
         toggle = 0;
 
     }
 
     public void drop(){
 
-        pinchTargetAngle = 0.25;
+        pinchTargetAngle = 1;
 
-        pinchServo.setPosition(0.25);
+        pinchServo.setPosition(1);
 
         toggle = 1;
 
@@ -94,10 +98,10 @@ public class Claw extends SubsystemBase {
 
         turnTargetAngle = 0;
 
-        leftTurnServo.setPosition(0.9);
-        rightTurnServo.setPosition(0.9);
+        leftTurnServo.setPosition(0.4);
+        rightTurnServo.setPosition(0.4);
 
-        grabToggle = 0;
+        grabToggle = 1;
 
     }
 
@@ -107,30 +111,49 @@ public class Claw extends SubsystemBase {
         rightTurnServo.setInverted(true);
         turnTargetAngle = 360;
 
-        leftTurnServo.setPosition(0.2);
-        rightTurnServo.setPosition(0.2);
+        leftTurnServo.setPosition(1);
+        rightTurnServo.setPosition(1);
 
     }
 
     public void specimenPosition(){
 
-        leftTurnServo.setInverted(true);
-        rightTurnServo.setInverted(false);
+        leftTurnServo.setInverted(false);
+        rightTurnServo.setInverted(true);
 
         turnTargetAngle = 90;
 
-        leftTurnServo.setPosition(0.45);
-        rightTurnServo.setPosition(0.45);
+        leftTurnServo.setPosition(0.75);
+        rightTurnServo.setPosition(0.75);
 
     }
 
     public void specimenHighPosition(){
 
-        leftTurnServo.setInverted(true);
-        rightTurnServo.setInverted(false);
+        leftTurnServo.setInverted(false);
+        rightTurnServo.setInverted(true);
 
-        leftTurnServo.setPosition(0.45);
-        rightTurnServo.setPosition(0.45);
+        leftTurnServo.setPosition(0.67);
+        rightTurnServo.setPosition(0.67);
+
+    }
+
+    public void specimenLoadPosition(){
+
+        timer.reset();
+
+        leftTurnServo.setInverted(false);
+        rightTurnServo.setInverted(true);
+
+        leftTurnServo.setPosition(0.6);
+        rightTurnServo.setPosition(0.6);
+
+        if (timer.time(TimeUnit.MILLISECONDS) > 125){
+
+            setClawToggle();
+
+
+        }
 
     }
 
@@ -139,10 +162,10 @@ public class Claw extends SubsystemBase {
         leftTurnServo.setInverted(false);
         rightTurnServo.setInverted(false);
 
-        rightTurnServo.setPosition(0.9);
-        leftTurnServo.setPosition(-0.9);
+        rightTurnServo.setPosition(0.74);
+        leftTurnServo.setPosition(0.59);
 
-        grabToggle = 1;
+        grabToggle = 0;
 
     }
 
@@ -152,11 +175,11 @@ public class Claw extends SubsystemBase {
 
             if (grabToggle == 0) {
 
-                verticalPosition();
+                collectingPosition();
 
             } else if (grabToggle == 1) {
 
-                collectingPosition();
+                verticalPosition();
 
             }
         }

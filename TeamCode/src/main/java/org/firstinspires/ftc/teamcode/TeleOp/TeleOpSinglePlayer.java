@@ -97,22 +97,37 @@ public class TeleOpSinglePlayer extends CommandOpMode {
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::setClawToggle, clawSubsystem));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
-                .whenHeld(new InstantCommand(clawSubsystem::basketPosition, clawSubsystem));
-
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(new IntakeCommand(armSubsystem, clawSubsystem));
-
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenHighPosition, armSubsystem));
 
-        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenHighPosition, clawSubsystem));
+
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(new InstantCommand(armSubsystem::collectPosition, armSubsystem));
+
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(new InstantCommand(armSubsystem::specimenLoadPosition, armSubsystem));
+
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
+                .whenPressed(new InstantCommand(clawSubsystem::specimenLoadPosition, clawSubsystem));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenLowPosition, armSubsystem));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT)
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenPosition, clawSubsystem));
+
+        driver.getGamepadButton(GamepadKeys.Button.Y)
+                .whenPressed(new InstantCommand(armSubsystem::rawRaise));
+
+        driver.getGamepadButton(GamepadKeys.Button.Y)
+                .whenInactive(new InstantCommand(armSubsystem::setCurrentPosition));
+
+        driver.getGamepadButton(GamepadKeys.Button.X)
+                .whenPressed(new InstantCommand(armSubsystem::rawRaise));
+
+        driver.getGamepadButton(GamepadKeys.Button.X)
+                .whenInactive(new InstantCommand(armSubsystem::setCurrentPosition));
 
         driver.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(new InstantCommand(armSubsystem::resetEncoders, armSubsystem));
