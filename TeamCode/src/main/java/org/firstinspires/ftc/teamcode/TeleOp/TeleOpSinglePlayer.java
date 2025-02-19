@@ -49,7 +49,8 @@ public class TeleOpSinglePlayer extends CommandOpMode {
         );
 
         armSubsystem = new Arm(
-                new MotorEx(hardwareMap, "em", 751.8, 223),
+                new MotorEx(hardwareMap, "em", 537.7, 312),
+                new MotorEx(hardwareMap, "em2", 537.7, 312),
                 new MotorEx(hardwareMap, "am", 537.7, 312),
                 telemetry,
                 driver

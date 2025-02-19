@@ -50,12 +50,14 @@ public class TeleOp23737 extends CommandOpMode {
                 driver
         );
 
-        armSubsystem = new Arm(
+       /* armSubsystem = new Arm(
                 new MotorEx(hardwareMap, "em", 537.7, 312),
                 new MotorEx(hardwareMap, "am", 537.7, 312),
                 telemetry,
                 operator
         );
+
+        */
 
         clawSubsystem = new Claw(
                 new SimpleServo(hardwareMap, "lts", 0, 360),

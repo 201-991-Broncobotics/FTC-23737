@@ -34,13 +34,13 @@ public class BasketAndPark extends CommandOpMode {
                 new Motor(hardwareMap, "bL", Motor.GoBILDA.RPM_435),
                 new Motor(hardwareMap, "bR", Motor.GoBILDA.RPM_435));
 
-        armSubsystem = new Arm(
+        /*armSubsystem = new Arm(
                 new MotorEx(hardwareMap, "em", 537.7, 312),
                 new MotorEx(hardwareMap, "am", 537.7, 312),
                 telemetry,
                 operator
         );
-
+*/
         clawSubsystem = new Claw(
                 new SimpleServo(hardwareMap, "lts", 0, 360),
                 new SimpleServo(hardwareMap, "rts", 0, 360),
