@@ -45,16 +45,6 @@ public class Claw extends SubsystemBase {
 
     }
 
-    @Override
-    public void periodic(){
-
-        telemetry.addData("Left Turn Servo Degrees: ", (leftTurnServo.getPosition() * 360));
-        telemetry.addData("Right Turn Servo Degrees: ", (rightTurnServo.getPosition() * 360));
-        telemetry.addData("Pinch Servo Angle: ", pinchServo.getAngle());
-
-
-    }
-
     public void setClawToggle(){
 
         if (operator.isDown(GamepadKeys.Button.RIGHT_BUMPER)){

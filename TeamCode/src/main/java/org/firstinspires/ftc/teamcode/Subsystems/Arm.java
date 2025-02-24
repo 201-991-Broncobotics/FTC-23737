@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -18,9 +17,11 @@ public class Arm extends SubsystemBase {
             ticksPerRevolution = 537.7,
             spoolDiameter = 1.181,
             pulleyDiameter = 3.438,
-            positionPower = 0.33;
+            positionPower = 1;
     private double trackedPosition;
     private double anglePower = 0.02;
+    private double autonAnglePower = 0;
+    private double autonExtensionPower = 0;
     public int extendingTargetPosition, angleTargetPosition;
     private boolean extendingIsInPosition, angleIsInPosition;
 
@@ -73,11 +74,18 @@ public class Arm extends SubsystemBase {
             extendingMotor.set(-operator.getRightY());
             extendingMotor2.set(-operator.getRightY());
 
-        } else {
 
-                extendingMotor.set(0);
-                extendingMotor2.set(0);
-            }
+        } else if (Math.abs(autonExtensionPower) > 0){
+
+            extendingMotor.set(autonExtensionPower);
+            extendingMotor2.set(autonExtensionPower);
+
+            } else {
+
+            extendingMotor.set(0);
+            extendingMotor2.set(0);
+
+        }
 
 
         if (angleIsInPosition) {
@@ -105,13 +113,23 @@ public class Arm extends SubsystemBase {
             angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
             angleMotor.set(-0.25);
 
+        } else if (operator.isDown(GamepadKeys.Button.B)) {
+
+            angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            angleMotor.set(1);
+        } else if (Math.abs(autonAnglePower) > 0) {
+
+            angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            angleMotor.set(-0.5);
         } else {
 
             angleMotor.set(0);
 
         }
 
-        if (Math.abs(extendingMotor.getDistance()) > 3000){
+
+
+        if (Math.abs(extendingMotor.getDistance()) > 3150){
 
             extendingMotor.set(0);
             extendingMotor2.set(0);
@@ -125,6 +143,8 @@ public class Arm extends SubsystemBase {
         extendingIsInPosition = true;
         angleIsInPosition = true;
         anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor2.setRunMode(Motor.RunMode.PositionControl);
@@ -134,13 +154,13 @@ public class Arm extends SubsystemBase {
         angleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         extendingMotor.setPositionCoefficient(0.5);
         extendingMotor2.setPositionCoefficient(0.5);
-        angleMotor.setPositionCoefficient(0.05);
+        angleMotor.setPositionCoefficient(0.2);
         extendingMotor.setPositionTolerance(25);
         extendingMotor2.setPositionTolerance(25);
         angleMotor.setPositionTolerance(25);
 
-        extendingTargetPosition = 2775;
-        angleTargetPosition = 1925;
+        extendingTargetPosition = 2750;
+        angleTargetPosition = 1800;
 
     }
 
@@ -149,6 +169,8 @@ public class Arm extends SubsystemBase {
         extendingIsInPosition = true;
         angleIsInPosition = true;
         anglePower = 0.01;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor2.setRunMode(Motor.RunMode.PositionControl);
@@ -183,6 +205,8 @@ public class Arm extends SubsystemBase {
         extendingIsInPosition = true;
         angleIsInPosition = true;
         anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor2.setRunMode(Motor.RunMode.PositionControl);
@@ -203,6 +227,8 @@ public class Arm extends SubsystemBase {
 
         extendingIsInPosition = false;
         angleIsInPosition = true;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         extendingMotor.setRunMode(Motor.RunMode.RawPower);
         extendingMotor2.setRunMode(Motor.RunMode.RawPower);
@@ -230,6 +256,8 @@ public class Arm extends SubsystemBase {
     public void rawRaise(){
 
         angleIsInPosition = false;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         angleMotor.setRunMode(Motor.RunMode.RawPower);
 
@@ -242,6 +270,8 @@ public class Arm extends SubsystemBase {
         angleIsInPosition = true;
         extendingIsInPosition = true;
         anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
@@ -263,6 +293,8 @@ public class Arm extends SubsystemBase {
         angleIsInPosition = true;
         extendingIsInPosition = true;
         anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
@@ -284,6 +316,8 @@ public class Arm extends SubsystemBase {
         angleIsInPosition = true;
         extendingIsInPosition = true;
         anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
@@ -305,6 +339,8 @@ public class Arm extends SubsystemBase {
         angleIsInPosition = true;
         extendingIsInPosition = true;
         anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
 
         angleMotor.setRunMode(Motor.RunMode.PositionControl);
         extendingMotor.setRunMode(Motor.RunMode.PositionControl);
@@ -318,6 +354,29 @@ public class Arm extends SubsystemBase {
 
         angleTargetPosition = (int) angleMotor.getDistance();
         extendingTargetPosition = (int) extendingMotor.getDistance();
+
+    }
+
+    public void autonExtend(){
+
+        angleIsInPosition = true;
+        extendingIsInPosition = true;
+        anglePower = 0.02;
+        autonAnglePower = 0;
+        autonExtensionPower = 0;
+
+        angleMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor.setRunMode(Motor.RunMode.PositionControl);
+        extendingMotor2.setRunMode(Motor.RunMode.PositionControl);
+        angleMotor.setPositionCoefficient(0.5);
+        angleMotor.setPositionTolerance(10);
+        extendingMotor.setPositionCoefficient(0.5);
+        extendingMotor.setPositionTolerance(25);
+        extendingMotor2.setPositionCoefficient(0.5);
+        extendingMotor2.setPositionTolerance(25);
+
+        angleTargetPosition = 350;
+        extendingTargetPosition = 3000;
 
     }
 
@@ -339,9 +398,39 @@ public class Arm extends SubsystemBase {
 
     }
 
+    public void autonRawRaise(){
+
+        angleIsInPosition = false;
+        autonAnglePower = -1;
+
+        angleMotor.setRunMode(Motor.RunMode.RawPower);
+
+        angleTargetPosition = 0;
+
+    }
+
+    public void autonRawExtend(){
+
+        extendingIsInPosition = false;
+        angleIsInPosition = true;
+        autonExtensionPower = 1;
+
+        extendingMotor.setRunMode(Motor.RunMode.RawPower);
+        extendingMotor2.setRunMode(Motor.RunMode.RawPower);
+
+
+        extendingTargetPosition = 0;
+        angleTargetPosition = 0;
+
+
+    }
+
     public void resetEncoders(){
 
         extendingMotor.resetEncoder();
         angleMotor.resetEncoder();
+
+        extendingTargetPosition = 0;
+        angleTargetPosition = 0;
     }
 }

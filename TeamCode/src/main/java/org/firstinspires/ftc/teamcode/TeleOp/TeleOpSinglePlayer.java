@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
+import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -22,7 +24,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.MecanumSubsystem;
 @TeleOp(name = "TeleOp - Single Player (WIP)")
 public class TeleOpSinglePlayer extends CommandOpMode {
 
-    private GamepadEx driver;
+    private GamepadEx driver, emergencyOp;
     private Arm armSubsystem;
     private MecanumSubsystem mecanumSubsystem;
     private Claw clawSubsystem;
@@ -32,6 +34,7 @@ public class TeleOpSinglePlayer extends CommandOpMode {
 
 
         driver = new GamepadEx(gamepad1);
+        emergencyOp = new GamepadEx(gamepad2);
 
         mecanumSubsystem = new MecanumSubsystem(
                 new MecanumDrive(
@@ -104,7 +107,15 @@ public class TeleOpSinglePlayer extends CommandOpMode {
                 .toggleWhenPressed(new InstantCommand(clawSubsystem::specimenHighPosition, clawSubsystem));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
-                .whenPressed(new InstantCommand(armSubsystem::collectPosition, armSubsystem));
+                .whenPressed(new SequentialCommandGroup(
+                        new InstantCommand(clawSubsystem::collect),
+                        new InstantCommand(armSubsystem::autonRawRaise),
+                        new WaitCommand(60),
+                        new InstantCommand(clawSubsystem::drop),
+                        new WaitCommand(350),
+                        new InstantCommand(armSubsystem::specimenLowPosition)
+
+                ));
 
         driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT)
                 .whenPressed(new InstantCommand(armSubsystem::specimenLoadPosition, armSubsystem));
@@ -128,6 +139,12 @@ public class TeleOpSinglePlayer extends CommandOpMode {
                 .whenPressed(new InstantCommand(armSubsystem::rawRaise));
 
         driver.getGamepadButton(GamepadKeys.Button.X)
+                .whenInactive(new InstantCommand(armSubsystem::setCurrentPosition));
+
+        driver.getGamepadButton(GamepadKeys.Button.B)
+                .whenPressed(new InstantCommand(armSubsystem::rawRaise));
+
+        driver.getGamepadButton(GamepadKeys.Button.B) // Hang
                 .whenInactive(new InstantCommand(armSubsystem::setCurrentPosition));
 
         driver.getGamepadButton(GamepadKeys.Button.A)

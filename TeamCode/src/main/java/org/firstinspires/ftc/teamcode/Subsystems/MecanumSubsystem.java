@@ -41,9 +41,9 @@ public class MecanumSubsystem extends SubsystemBase {
         telemetry.addData("Back Left Power: ", backLeft.get());
         telemetry.addData("Back Right Power: ", backRight.get());
 
-        strafeSpeed = driver.getLeftX();
-        forwardSpeed = driver.getLeftY();
-        turnSpeed = driver.getRightX();
+        strafeSpeed = driver.getLeftX() * 0.75;
+        forwardSpeed = driver.getLeftY() * 0.75;
+        turnSpeed = driver.getRightX() * 0.75;
 
         mecanumDrive.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed);
 
